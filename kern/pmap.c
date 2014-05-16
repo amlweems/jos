@@ -74,7 +74,6 @@ static void check_page_installed_pgdir(void);
 // If n==0, returns the address of the next free page without allocating
 // anything.
 //
-// If we're out of memory, boot_alloc should panic.
 // This function may ONLY be used during initialization,
 // before the page_free_list list has been set up.
 static void *
@@ -88,7 +87,7 @@ boot_alloc(uint32_t n)
 	// which points to the end of the kernel's bss segment:
 	// the first virtual address that the linker did *not* assign
 	// to any kernel code or global variables.
-	if (!nextfree) {
+	if (nextfree == NULL) {
 		extern char end[];
 		nextfree = ROUNDUP((char *) end, PGSIZE);
 	}
@@ -96,10 +95,15 @@ boot_alloc(uint32_t n)
 	// Allocate a chunk large enough to hold 'n' bytes, then update
 	// nextfree.  Make sure nextfree is kept aligned
 	// to a multiple of PGSIZE.
-	//
-	// LAB 2: Your code here.
+	result = nextfree;
+	nextfree = ROUNDUP(nextfree + n, PGSIZE);
 
-	return NULL;
+	// If we're out of memory, boot_alloc should panic.
+	if ((uint32_t)nextfree > (npages * PGSIZE + KERNBASE)) {
+		panic("boot_alloc: out of memory\n");
+	}
+
+	return result;
 }
 
 // Set up a two-level page table:
