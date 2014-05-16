@@ -78,7 +78,7 @@ mon_backtrace(int argc, char **argv, struct Trapframe *tf)
 				}
 			}
 			cprintf("\n\t%s:%d: %.*s+%d\n", info.eip_file, info.eip_line,
-				info.eip_fn_namelen, info.eip_fn_name, ebp[1] - info.eip_fn_addr);
+				info.eip_fn_namelen, info.eip_fn_name, eip - info.eip_fn_addr);
 		}
 
 		eip = ebp[1];
