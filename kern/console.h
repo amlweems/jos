@@ -23,4 +23,8 @@ int cons_getc(void);
 void kbd_intr(void); // irq 1
 void serial_intr(void); // irq 4
 
+void cga_clear_screen(void);
+void cga_clear_line(void);
+uint16_t crt_attr;
+
 #endif /* _CONSOLE_H_ */

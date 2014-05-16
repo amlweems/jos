@@ -113,12 +113,12 @@ monitor(struct Trapframe *tf)
 {
 	char *buf;
 
-	cprintf("Welcome to the JOS kernel monitor!\n");
-	cprintf("Type 'help' for a list of commands.\n");
+	cprintf("Welcome to the \x1b[34mJOS kernel monitor\x1b[0m!\n");
+	cprintf("Type '\x1b[35mhelp\x1b[0m' for a list of commands.\n");
 
 
 	while (1) {
-		buf = readline("K> ");
+		buf = readline("\x1b[33mK> \x1b[0m");
 		if (buf != NULL)
 			if (runcmd(buf, tf) < 0)
 				break;

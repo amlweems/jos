@@ -7,6 +7,7 @@
 #include <inc/assert.h>
 
 #include <kern/console.h>
+#include <kern/ansi.h>
 
 static void cons_intr(int (*proc)(void));
 static void cons_putc(int c);
@@ -125,6 +126,9 @@ lpt_putc(int c)
 
 /***** Text-mode CGA/VGA display output *****/
 
+#define ANSI_ESC 1
+#define ANSI_
+
 static unsigned addr_6845;
 static uint16_t *crt_buf;
 static uint16_t crt_pos;
@@ -155,6 +159,7 @@ cga_init(void)
 
 	crt_buf = (uint16_t*) cp;
 	crt_pos = pos;
+	crt_attr = 0x0700;
 }
 
 
@@ -162,10 +167,6 @@ cga_init(void)
 static void
 cga_putc(int c)
 {
-	// if no attribute given, then use black on white
-	if (!(c & ~0xFF))
-		c |= 0x0700;
-
 	switch (c & 0xff) {
 	case '\b':
 		if (crt_pos > 0) {
@@ -187,7 +188,9 @@ cga_putc(int c)
 		cons_putc(' ');
 		break;
 	default:
-		crt_buf[crt_pos++] = c;		/* write the character */
+		if (ansi_parse(c)) {
+			crt_buf[crt_pos++] = c | crt_attr;		/* write the character */
+		}
 		break;
 	}
 
@@ -208,6 +211,17 @@ cga_putc(int c)
 	outb(addr_6845 + 1, crt_pos);
 }
 
+void
+cga_clear_screen(void)
+{
+	// TODO: clear screen
+}
+
+void
+cga_clear_line(void)
+{
+	// TODO: clear line
+}
 
 /***** Keyboard input code *****/
 
@@ -438,6 +452,7 @@ void
 cons_init(void)
 {
 	cga_init();
+	ansi_init();
 	kbd_init();
 	serial_init();
 
