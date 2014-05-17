@@ -214,13 +214,21 @@ cga_putc(int c)
 void
 cga_clear_screen(void)
 {
-	// TODO: clear screen
+	uint16_t i;
+	for (i = 0; i < CRT_SIZE; i++) {
+		crt_buf[i] = ' ';
+	}
+	crt_pos = 0;
 }
 
 void
 cga_clear_line(void)
 {
-	// TODO: clear line
+	uint16_t i;
+	crt_pos -= (crt_pos % CRT_COLS);
+	for (i = crt_pos; i < crt_pos + CRT_COLS; i++) {
+		crt_buf[i] = ' ';
+	}
 }
 
 /***** Keyboard input code *****/

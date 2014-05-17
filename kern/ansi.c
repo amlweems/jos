@@ -173,28 +173,36 @@ do_state_digit(char data)
 static state_t
 do_state_cur_up(char data)
 {
-	// TODO: move cursor up
+	if (crt_pos > CRT_COLS) {
+		crt_pos -= CRT_COLS;
+	}
 	return STATE_INIT;
 }
 
 static state_t
 do_state_cur_down(char data)
 {
-	// TODO: move cursor down
+	if (crt_pos < CRT_SIZE - CRT_COLS) {
+		crt_pos += CRT_COLS;
+	}
 	return STATE_INIT;
 }
 
 static state_t
 do_state_cur_forward(char data)
 {
-	// TODO: move cursor forward
+	if (crt_pos < CRT_COLS) {
+		crt_pos++;
+	}
 	return STATE_INIT;
 }
 
 static state_t
 do_state_cur_backward(char data)
 {
-	// TODO: move cursor backward
+	if (crt_pos > 0) {
+		crt_pos--;
+	}
 	return STATE_INIT;
 }
 
