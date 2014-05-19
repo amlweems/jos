@@ -173,36 +173,28 @@ do_state_digit(char data)
 static state_t
 do_state_cur_up(char data)
 {
-	if (crt_pos > CRT_COLS) {
-		crt_pos -= CRT_COLS;
-	}
+	cga_move_cursor(CUR_UP);
 	return STATE_INIT;
 }
 
 static state_t
 do_state_cur_down(char data)
 {
-	if (crt_pos < CRT_SIZE - CRT_COLS) {
-		crt_pos += CRT_COLS;
-	}
+	cga_move_cursor(CUR_DOWN);
 	return STATE_INIT;
 }
 
 static state_t
 do_state_cur_forward(char data)
 {
-	if (crt_pos < CRT_COLS) {
-		crt_pos++;
-	}
+	cga_move_cursor(CUR_RIGHT);
 	return STATE_INIT;
 }
 
 static state_t
 do_state_cur_backward(char data)
 {
-	if (crt_pos > 0) {
-		crt_pos--;
-	}
+	cga_move_cursor(CUR_LEFT);
 	return STATE_INIT;
 }
 

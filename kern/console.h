@@ -7,6 +7,7 @@
 #endif
 
 #include <inc/types.h>
+#include <kern/ansi.h>
 
 #define MONO_BASE	0x3B4
 #define MONO_BUF	0xB0000
@@ -25,6 +26,7 @@ void serial_intr(void); // irq 4
 
 void cga_clear_screen(void);
 void cga_clear_line(void);
+void cga_move_cursor(cursor_t);
 uint16_t crt_attr;
 
 #endif /* _CONSOLE_H_ */

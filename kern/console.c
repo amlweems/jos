@@ -126,9 +126,6 @@ lpt_putc(int c)
 
 /***** Text-mode CGA/VGA display output *****/
 
-#define ANSI_ESC 1
-#define ANSI_
-
 static unsigned addr_6845;
 static uint16_t *crt_buf;
 static uint16_t crt_pos;
@@ -228,6 +225,33 @@ cga_clear_line(void)
 	crt_pos -= (crt_pos % CRT_COLS);
 	for (i = crt_pos; i < crt_pos + CRT_COLS; i++) {
 		crt_buf[i] = ' ';
+	}
+}
+
+void
+cga_move_cursor(cursor_t t)
+{
+	switch (t) {
+	case CUR_UP:
+		if (crt_pos > CRT_COLS) {
+			crt_pos -= CRT_COLS;
+		}
+		break;
+	case CUR_DOWN:
+		if (crt_pos < CRT_SIZE - CRT_COLS) {
+			crt_pos += CRT_COLS;
+		}
+		break;
+	case CUR_RIGHT:
+		if (crt_pos < CRT_COLS) {
+			crt_pos++;
+		}
+		break;
+	case CUR_LEFT:
+		if (crt_pos > 0) {
+			crt_pos--;
+		}
+		break;
 	}
 }
 

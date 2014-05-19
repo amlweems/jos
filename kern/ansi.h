@@ -9,6 +9,13 @@
 
 #define ANSI_MAX_VALUES 4
 
+typedef enum {
+	CUR_UP,
+	CUR_DOWN,
+	CUR_RIGHT,
+	CUR_LEFT
+} cursor_t;
+
 typedef enum { 
 	STATE_INIT,
 	STATE_ESC,
