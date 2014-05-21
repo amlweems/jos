@@ -289,6 +289,7 @@ page_alloc(int alloc_flags)
 void
 page_free(struct PageInfo *pp)
 {
+	pp->pp_link = NULL;
 	if (page_free_list == NULL) {
 		page_free_list = pp;
 	} else {
@@ -297,7 +298,6 @@ page_free(struct PageInfo *pp)
 			p = p->pp_link;
 		}
 		p->pp_link = pp;
-		pp->pp_link = NULL;		
 	}
 }
 
