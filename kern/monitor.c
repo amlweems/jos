@@ -10,6 +10,7 @@
 #include <kern/console.h>
 #include <kern/monitor.h>
 #include <kern/kdebug.h>
+#include <kern/pmap.h>
 
 #define CMDBUF_SIZE	80	// enough for one VGA text line
 
@@ -25,6 +26,7 @@ static struct Command commands[] = {
 	{ "help", "Display this list of commands", mon_help },
 	{ "kerninfo", "Display information about the kernel", mon_kerninfo },
 	{ "backtrace", "Display backtrace of all stack frames", mon_backtrace },
+	{ "showmap", "Display the page mappings and perm bits", mon_showmap },
 };
 #define NCOMMANDS (sizeof(commands)/sizeof(commands[0]))
 
@@ -87,6 +89,24 @@ mon_backtrace(int argc, char **argv, struct Trapframe *tf)
 	return 0;
 }
 
+int
+mon_showmap(int argc, char **argv, struct Trapframe *tf)
+{
+	uintptr_t start, end, va;
+	pte_t *p;
+	if (argc != 3) {
+		cprintf("Usage: showmap start end\n");
+		return 1;
+	}
+	start = strtol(argv[1], NULL, 0);
+	end = strtol(argv[2], NULL, 0);
+	start = ROUNDUP(start, PGSIZE);
+	for (va = start; va < end; va += PGSIZE) {
+		p = pgdir_walk(kern_pgdir, (const void *)va, 0);
+		if (p) cprintf("VA: 0x%08x\tPA: 0x%08x\n", va, p);
+	}
+	return 0;
+}
 
 
 /***** Kernel monitor command interpreter *****/
